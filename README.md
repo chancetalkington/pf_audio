@@ -6,6 +6,7 @@ You can manual create shortcut with next additional data
 "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
 ![изображение](https://github.com/user-attachments/assets/362bf8d8-54b3-4b0e-a6cb-95baac1fe619)
 5. Make sure that the page opens correctly: http://localhost:9222/json
-6. Run script: python main.py
-7. After loading the script, wait for the message: Recording...
-8. FART
+6. .env file contains info about token to create
+7. Run script: python main.py
+8. After loading the script, wait for the message: Recording...
+9. FART
