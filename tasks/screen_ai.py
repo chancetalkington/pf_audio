@@ -2,7 +2,6 @@ import asyncio
 import pyautogui
 import cv2
 import numpy as np
-from tensorflow.python.data.experimental.ops.testing import sleep
 
 
 async def find_captcha(sample_image_path):

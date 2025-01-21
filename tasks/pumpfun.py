@@ -6,8 +6,6 @@ import config
 from config import *
 
 from tasks.screen_ai import solve_captcha
-import keyboard
-import pywinauto
 
 
 class Pumpfun:
@@ -74,7 +72,6 @@ class Pumpfun:
             # await asyncio.sleep(5)
             # await page.keyboard.press('Tab')
             # await expect(captcha).to_be_visible(timeout=10000)
-            # page = await context.new_page()
             await asyncio.sleep(1)
 
             await solve_captcha(times=10, delay=1)
