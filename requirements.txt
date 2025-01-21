@@ -1,5 +1,4 @@
 playwright==1.49.1
-patchright==1.49.1
 requests==2.32.3
 PyAudio==0.2.14
 librosa==0.10.2

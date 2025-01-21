@@ -1,10 +1,11 @@
+import asyncio
 import pyautogui
 import cv2
 import numpy as np
 from tensorflow.python.data.experimental.ops.testing import sleep
 
 
-def find_captcha(sample_image_path):
+async def find_captcha(sample_image_path):
     # Take a screenshot
     screenshot = pyautogui.screenshot()
     screenshot = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
@@ -24,32 +25,35 @@ def find_captcha(sample_image_path):
         # Coordinates of the top-right corner
         top_left = max_loc
         h, w = sample_image.shape[:2]
+        x = top_left[0] + 30
+        y = top_left[1] + 30
         # Move the mouse cursor and click
-        pyautogui.moveTo(top_left[0] - 30, top_left[1] - 30, duration=1)  # Smooth movement to the point
+        pyautogui.moveTo(x, y, duration=1)  # Smooth movement to the point
+        await asyncio.sleep(0.5)
+
         pyautogui.click()  # Perform a left-click
-        pyautogui.moveTo(top_left[0] + 30, top_left[1] + 30, duration=1)  # Smooth movement to the point
         return top_left
     else:
         return None
 
 
-def solve_captcha(times: int, delay: int | None = 500000):
-    sample_image_path = r"C:\Users\Papa\PycharmProjects\PW\PF_audio\cloudflare.png"  # Path to your sample image
+async def solve_captcha(times: int, delay: int | None = 1):
+    sample_image_path = "cloudflare.png"  # Path to your sample image
     if delay is None:
-        delay = 500000
+        delay = 1
     count = 0
     while True:
         try:
-            result = find_captcha(sample_image_path)
+            result = await find_captcha(sample_image_path)
             if result:
                 print(f"Captcha found at coordinates: {result}!")
                 break
             else:
                 if count > times:
                     break
-                print("No Captcha found. Trying again in 0.5 seconds..")
+                print(f"No Captcha found. Trying again in {delay} seconds..")
                 count += 1
-                sleep(delay)
+                await asyncio.sleep(delay)
 
         except ValueError as e:
             print(e)

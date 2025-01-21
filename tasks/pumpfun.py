@@ -5,16 +5,14 @@ from playwright.async_api import async_playwright, expect
 import config
 from config import *
 
-from tasks.screen_ai import *
+from tasks.screen_ai import solve_captcha
 import keyboard
+import pywinauto
 
 
 class Pumpfun:
     def __init__(self):
         self.url = 'https://pump.fun/create'
-        wallet_path = f'{EXTENSIONS_PATH}\\bhhhlbepdkbapadjdnnojkbgioiodbic'
-        version = f'{os.listdir(wallet_path)[-1]}'
-        self.wallet_path = f'{wallet_path}\\{version}'
 
     async def create_token(self):
         print('Creating token')
@@ -28,7 +26,7 @@ class Pumpfun:
                     page = i
                     flag = True
             if flag is False:
-                await context.new_page()
+                page = await context.new_page()
             await page.goto(self.url)
 
             # Set Token name
@@ -58,26 +56,34 @@ class Pumpfun:
             # Click Create coin button
             connect = page.get_by_role('button', name="create coin")
             await expect(connect).to_be_visible()
+            await page.wait_for_timeout(1000)
             await connect.click()
+            await page.wait_for_timeout(1000)
 
             # Fill Amount field
             amount = page.locator("[id='amount']")
             await expect(amount).to_be_visible()
-            await name.first.clear()
-            await name.click()
-            await name.first.type(config.AMOUNT, delay=150)
-            await name.press_sequentially(config.AMOUNT)
+            await amount.first.clear()
+            await amount.click()
+            await amount.first.type(config.AMOUNT, delay=150)
+            await page.keyboard.press('Tab')
             await page.wait_for_timeout(1000)
 
             # Solve Captcha
-            # captcha = page.locator("[title='Widget containing a Cloudflare security challenge']")
-            # await expect(captcha).to_be_visible()
-            solve_captcha(times=50, delay=1000000)
+            # captcha = page.frame_locator("#cf-chl-widget-aitlp")
+            # await asyncio.sleep(5)
+            # await page.keyboard.press('Tab')
+            # await expect(captcha).to_be_visible(timeout=10000)
+            # page = await context.new_page()
+            await asyncio.sleep(1)
 
+            await solve_captcha(times=10, delay=1)
+
+            await page.wait_for_timeout(1000)
             # Click Create coin button again
-            connect = page.get_by_role('button', name="create coin")
-            await expect(connect).to_be_enabled(timeout=20000)
-            await connect.click()
+            create = page.get_by_role('button', name="create coin")
+            await expect(create).to_be_enabled(timeout=30000)
+            await create.click()
             await page.wait_for_timeout(1000)
 
             # Click View button
